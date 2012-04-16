@@ -112,6 +112,7 @@ Currently this plugin supports a 3 types of bindings:
 You can bind a DOM element to an attribute that you specified in `data` in the `bind` function.
 
 For example, given the following HTML template
+
 ```html
 <div id='myDiv'>
     <div model-bind="text : greeting.x"/>
@@ -119,6 +120,7 @@ For example, given the following HTML template
 ```
 
 And the following bind method:
+
 ```javascript
 ModelBinding.bind({
                         greeting: Backbone.Model.extend({
@@ -127,6 +129,7 @@ ModelBinding.bind({
 ```
 
 The binding will result in the following:
+
 ```html
 <div id='myDiv'>
     <div model-bind="text : greeting.x">hello_world</div>
