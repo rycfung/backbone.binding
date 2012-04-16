@@ -221,10 +221,10 @@ var Greeting = Backbone.Model.extend({
                 defaults: {x : 'hello'},
                 z: function(val){
                     if(typeof val == 'undefined'){
-                        return this.get('y');
+                        return this.get('x');
                     }
-                    this.set({y: val});
-                    alert("y is changed to : " + val);
+                    this.set({x: val});
+                    alert("x is changed to : " + val);
                 }
         });
 ```
@@ -235,7 +235,8 @@ This Backbone Model is a little more elaborated than the previous examples. Here
  This parameter will be passed to the function should the binding DOM element changes its value.
 
 For example, if the user enters '123' into the input that is binded to greeting.z(). The function call
-`greeting.z('123') will be invoked, and the value in 'x' will be updated.
+`greeting.z('123') will be invoked, and the value in 'x' will be updated. Also, since `greeting` is a Backbone Model,
+the `change:x` event will be invoked, and the `div` binding to `greeting.x` will automatically update itself.
 
 
 The function binding is especially helpful when dealing with complex values that aggregates multiple attributes from
