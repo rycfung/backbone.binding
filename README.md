@@ -11,9 +11,9 @@ suitable for large projects. Knockout.js, on the other hand takes the
 that handles a lot of the business logic in your applications.
 
 One of the places where Knockout.js breaks down in Backbone.js is the way a Model is fundamentally handled. Backbone
-keeps track of its model's attribute in an `attirubtes` field inside the model. Setting and getting model attributes
-requires the caller to go through the `get()` and `set()` methods. Knockout.js, on the other hand,
-implements its Model by declaring all attribute as the root of the object. Furthermore, the attributes must all be
+keeps track of its model's attribute in an `attributes` field inside the model. Setting and getting model attributes
+requires the caller to invoke the `get()` and `set()` methods. Knockout.js, on the other hand,
+implements its Model by declaring all attribute at the root of the object. Furthermore, the attributes must all be
 declared with `ko.observable` in order for is Views to be aware of their changes.
 
 # Usage
