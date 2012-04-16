@@ -165,6 +165,7 @@ a function in an object in `data` from the `bind` method. The result is that the
 function's return value.
 
 For example, given the following HTML template
+
 ```html
 <div id='myDiv'>
     <div model-bind="text : greeting.x()"/>
@@ -173,6 +174,7 @@ For example, given the following HTML template
 ```
 
 And the following bind method:
+
 ```javascript
 ModelBinding.bind({
                         greeting: Backbone.Model.extend({
@@ -187,6 +189,7 @@ ModelBinding.bind({
 ```
 
 The binding will result in the following:
+
 ```html
 <div id='myDiv'>
     <div model-bind="text : greeting.a()">hello</div>
@@ -199,6 +202,7 @@ Unfortunately, the function binding currently do not update the view automatical
 provide is a one-way synchronization from the view to the model.
 
 Consider the following example:
+
 ```html
 <div id='myDiv'>
     <div model-bind="text : greeting.x"/>
@@ -242,6 +246,7 @@ values into the form inputs.
 ## v0.1.0
 * added model-bind
 * added select binding
+* added documentations
 
 
 # Legal (MIT License)
