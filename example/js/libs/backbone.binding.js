@@ -65,7 +65,7 @@
             refresh: function(el){
                 if(typeof $.mobile !== "undefined"){
                     var type;
-                    var tagName = $(el).prop('tagName').toLowerCase()
+                    var tagName = $(el).attr('tagName').toLowerCase()
                     if(tagName == 'select'){
                         if($(el).attr('data-role') == 'slider'){
                             type = 'slider';
@@ -100,12 +100,13 @@
 
 
         var StandardBinding = function(options){
-            if(options.elementSetter && _.isFunction(options.elementSetter)){
-                this.setOnElement = options.elementSetter;
+            if(options.elementSetter){
+                this.setOnElement = options.elementSetter.set;
+                this.getValOnElement = options.elementSetter.get || function(el, attr){
+                    return $(el).val();
+                }
             }
-        };
-        StandardBinding.prototype = {
-            bindFunc: function(bindingAttr, bindingValue, params, el){
+            this.bindFunc = _.bind(function(bindingAttr, bindingValue, params, el){
                 // this is a function
                 // bind the values to element now
                 var bindingFunc = bindingValue.substr(0, bindingValue.indexOf('()'));
@@ -120,10 +121,10 @@
                 // now we bind to the change event of the element
                 $(el).on('change', _.bind(function(event){
                     // pass the value to the method
-                    params[bindingFunc].call(params, $(event.target).val())
+                    params[bindingFunc].call(params, this.getValOnElement(event.target));
                 },this));
-            },
-            bindAttr: function(bindingAttr, bindingValue, params, el){
+            }, this);
+            this.bindAttr = _.bind(function(bindingAttr, bindingValue, params, el){
                 // this is an attribute
                 // bind the values to element now
                 this.setOnElement(el, bindingAttr, params.get(bindingValue));
@@ -136,14 +137,13 @@
                 },this));
 
                 // now we bind to the change event of the element
-                $(el).on('change', function(event){
+                $(el).on('change', _.bind(function(event){
                     var data = {};
-                    data[bindingValue] = $(event.target).val();
+                    data[bindingValue] = this.getValOnElement(event.target);
                     params.set(data);
-                })
-            }
+                },this));
+            }, this)
         };
-
 
         var DataWrapper = function(params){
             this.params = params;
@@ -185,49 +185,74 @@
         };
 
         var ElementSetter = {
-            select: function(el, attr, val){
-                if(val!= null && typeof val !== 'undefined'){
-                    if($('option[value="'+val+'"]', el).length > 0)
-                    {
-                        $('option[value="'+val+'"]', el).attr('selected', 'selected');
+            select:{
+                set:function(el, attr, val){
+                    if(val!= null && typeof val !== 'undefined'){
+                        if($('option[value="'+val+'"]', el).length > 0)
+                        {
+                            $('option[value="'+val+'"]', el).attr('selected', 'selected');
+                        }
+                        else {
+                            $(el).val("");
+                        }
                     }
                     else {
-                        $(el).val("");
+                        $(el).val('');
                     }
+                    JQM.refresh(el);
                 }
-                else {
-                    $(el).val('');
-                }
-                JQM.refresh(el);
             },
-            text: function(el, attr, val){
-                if (typeof val !== 'undefined')
-                {
-                    $(el).text(val);
-                }
-                else {
-                    // nothing
-                }
-                JQM.refresh(el);
-            },
-            standard: function(el, attr, val){
-                if (typeof val !== 'undefined')
-                {
-                    $(el).attr(attr, val);
-                }
-                else {
-                    if($(el).attr(attr)){
-                        $(el).removeAttr(attr);
+            text: {
+                set: function(el, attr, val){
+                    if (typeof val !== 'undefined')
+                    {
+                        $(el).text(val);
                     }
+                    else {
+                        // nothing
+                    }
+                    JQM.refresh(el);
                 }
-                JQM.refresh(el);
+            },
+            checkbox: {
+                set:function(el, attr, val) {
+                    if(typeof val!== 'undefined')
+                    {
+                        if(val){
+                            $(el).attr('checked', true)
+                        }else {
+                            $(el).attr('checked, false');
+                        }
+                    }
+                    else {
+                        $(el).attr('checked', false);
+                    }
+                },
+                get: function(el){
+                    return $(el).is(':checked');
+                }
+            },
+            standard: {
+                set: function(el, attr, val){
+                    if (typeof val !== 'undefined')
+                    {
+                        $(el).attr(attr, val);
+                    }
+                    else {
+                        if($(el).attr(attr)){
+                            $(el).removeAttr(attr);
+                        }
+                    }
+                    JQM.refresh(el);
+                }
             }
         }
 
         var Modules =  {
             'value': new StandardBinding({elementSetter: ElementSetter.standard}),
             'select': new StandardBinding({elementSetter: ElementSetter.select}),
-            'text': new StandardBinding({elementSetter: ElementSetter.text})
+            'text': new StandardBinding({elementSetter: ElementSetter.text}),
+            'checkbox': new StandardBinding({elementSetter: ElementSetter.checkbox})
         }
 
 

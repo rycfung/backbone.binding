@@ -27,15 +27,35 @@ define([
                 '<br/>' +
                 '<input model-bind="value: greeting.x">' +
                 '<input model-bind="value: greeting.world()">' +
+                '<br/>' +
                 "<select model-bind='select : greeting.x'>" +
                     "<option value=''>Select</option>"+
                     "<option value='Hello'>Hello</option>"+
                     "<option value='GoodBye'>GoodBye</option>"+
-                "</select>");
+                "</select>" +
+                '<br/>' +
+                "<label>Hello: <input type='checkbox' value='Hello' model-bind='checkbox: greeting.x'></label>"+
+                '<br/>' +
+                "<label>Foo: <input type='checkbox' model-bind='checkbox: checker.foo'></label>" +
+                "<br/>" +
+                "<span model-bind='text : checker.foo'/>" +
+                "<br/>" +
+                "<label>Bar: <input type='checkbox' model-bind='checkbox: checker.bar'></label>" +
+                "<br/>" +
+                "<span model-bind='text : checker.bar'/>"
+                );
 
             var greeting = new GreetingModel();
+            var checker = new (Backbone.Model.extend({
+                defaults: {
+                    foo: true,
+                    bar: false
+                },
+                initialize: function(){}
+            }))();
             ModelBinding.bind({
-                greeting: greeting
+                greeting: greeting,
+                checker:  checker
             }, this.$el);
 
             setTimeout(function(){
